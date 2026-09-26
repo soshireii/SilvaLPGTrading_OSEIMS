@@ -6,28 +6,28 @@
             <div>
                 <label class="block text-xs font-medium text-gray-600 mb-1">Full name</label>
                 <input type="text" name="name" value="{{ old('name') }}" required
-                    class="w-full rounded-lg border-gray-300 text-sm focus:border-maroon-500 focus:ring-maroon-500">
+                       class="w-full rounded-lg border-gray-300 text-sm focus:border-maroon-500 focus:ring-maroon-500">
             </div>
             <div>
                 <label class="block text-xs font-medium text-gray-600 mb-1">Email (used to log in)</label>
                 <input type="email" name="email" value="{{ old('email') }}" required
-                    class="w-full rounded-lg border-gray-300 text-sm focus:border-maroon-500 focus:ring-maroon-500">
+                       class="w-full rounded-lg border-gray-300 text-sm focus:border-maroon-500 focus:ring-maroon-500">
             </div>
             <div>
                 <label class="block text-xs font-medium text-gray-600 mb-1">Phone number</label>
                 <input type="text" name="phone" value="{{ old('phone') }}" required
-                    class="w-full rounded-lg border-gray-300 text-sm focus:border-maroon-500 focus:ring-maroon-500">
+                       class="w-full rounded-lg border-gray-300 text-sm focus:border-maroon-500 focus:ring-maroon-500">
             </div>
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-medium text-gray-600 mb-1">Temporary password</label>
                     <input type="password" name="password" required minlength="8"
-                        class="w-full rounded-lg border-gray-300 text-sm focus:border-maroon-500 focus:ring-maroon-500">
+                           class="w-full rounded-lg border-gray-300 text-sm focus:border-maroon-500 focus:ring-maroon-500">
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-gray-600 mb-1">Confirm password</label>
                     <input type="password" name="password_confirmation" required minlength="8"
-                        class="w-full rounded-lg border-gray-300 text-sm focus:border-maroon-500 focus:ring-maroon-500">
+                           class="w-full rounded-lg border-gray-300 text-sm focus:border-maroon-500 focus:ring-maroon-500">
                 </div>
             </div>
             <p class="text-[11px] text-gray-400">Share this password with the staff member directly — there's no self-signup, so this is the only way they get access.</p>

@@ -6,17 +6,17 @@
             <div>
                 <label class="block text-xs font-medium text-gray-600 mb-1">Full name</label>
                 <input type="text" name="name" value="{{ old('name', $staff->name) }}" required
-                    class="w-full rounded-lg border-gray-300 text-sm focus:border-maroon-500 focus:ring-maroon-500">
+                       class="w-full rounded-lg border-gray-300 text-sm focus:border-maroon-500 focus:ring-maroon-500">
             </div>
             <div>
                 <label class="block text-xs font-medium text-gray-600 mb-1">Email (used to log in)</label>
                 <input type="email" name="email" value="{{ old('email', $staff->email) }}" required
-                    class="w-full rounded-lg border-gray-300 text-sm focus:border-maroon-500 focus:ring-maroon-500">
+                       class="w-full rounded-lg border-gray-300 text-sm focus:border-maroon-500 focus:ring-maroon-500">
             </div>
             <div>
                 <label class="block text-xs font-medium text-gray-600 mb-1">Phone number</label>
                 <input type="text" name="phone" value="{{ old('phone', $staff->phone) }}" required
-                    class="w-full rounded-lg border-gray-300 text-sm focus:border-maroon-500 focus:ring-maroon-500">
+                       class="w-full rounded-lg border-gray-300 text-sm focus:border-maroon-500 focus:ring-maroon-500">
             </div>
 
             <div>
@@ -37,12 +37,12 @@
                 <div>
                     <label class="block text-xs font-medium text-gray-600 mb-1">Reset password (optional)</label>
                     <input type="password" name="password" minlength="8"
-                        class="w-full rounded-lg border-gray-300 text-sm focus:border-maroon-500 focus:ring-maroon-500">
+                           class="w-full rounded-lg border-gray-300 text-sm focus:border-maroon-500 focus:ring-maroon-500">
                 </div>
                 <div>
                     <label class="block text-xs font-medium text-gray-600 mb-1">Confirm new password</label>
                     <input type="password" name="password_confirmation" minlength="8"
-                        class="w-full rounded-lg border-gray-300 text-sm focus:border-maroon-500 focus:ring-maroon-500">
+                           class="w-full rounded-lg border-gray-300 text-sm focus:border-maroon-500 focus:ring-maroon-500">
                 </div>
             </div>
             <p class="text-[11px] text-gray-400">Leave the password fields blank to keep their current password.</p>

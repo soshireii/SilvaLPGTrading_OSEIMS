@@ -38,9 +38,9 @@
                         </td>
                         <td class="py-3 px-4">
                             @if($person->active_deliveries_count > 0)
-                            <x-badge color="yellow" :label="$person->active_deliveries_count . ' in transit'" />
+                                <x-badge color="yellow" :label="$person->active_deliveries_count . ' in transit'" />
                             @else
-                            <span class="text-gray-400">—</span>
+                                <span class="text-gray-400">—</span>
                             @endif
                         </td>
                         <td class="py-3 px-4 text-gray-600">{{ $person->completed_deliveries_count }}</td>
@@ -50,16 +50,14 @@
                         <td class="py-3 px-4 text-right space-x-3">
                             <a href="{{ route('admin.delivery-staff.edit', $person) }}" class="text-maroon-600 text-xs font-medium hover:underline">Edit</a>
                             <form method="POST" action="{{ route('admin.delivery-staff.destroy', $person) }}"
-                                class="inline" onsubmit="return confirm('Permanently delete {{ $person->name }}\'s account? This cannot be undone.');">
+                                  class="inline" onsubmit="return confirm('Permanently delete {{ $person->name }}\'s account? This cannot be undone.');">
                                 @csrf @method('DELETE')
                                 <button type="submit" class="text-status-danger text-xs font-medium hover:underline">Delete</button>
                             </form>
                         </td>
                     </tr>
                     @empty
-                    <tr>
-                        <td colspan="6" class="py-8 text-center text-gray-400">No delivery staff accounts yet.</td>
-                    </tr>
+                    <tr><td colspan="6" class="py-8 text-center text-gray-400">No delivery staff accounts yet.</td></tr>
                     @endforelse
                 </tbody>
             </table>

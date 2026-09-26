@@ -17,19 +17,13 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    /** @var \App\Models\User|null $user */
-    $user = Auth::user();
-
-    return $user
-        ? redirect()->route($user->homeRoute())
+    return Auth::check()
+        ? redirect()->route(Auth::user()->homeRoute())
         : redirect()->route('login');
 });
 
 Route::get('/dashboard', function () {
-    /** @var \App\Models\User $user */
-    $user = Auth::user();
-
-    return redirect()->route($user->homeRoute());
+    return redirect()->route(Auth::user()->homeRoute());
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {

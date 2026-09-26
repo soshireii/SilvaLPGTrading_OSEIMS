@@ -21,8 +21,8 @@ class DeliveryStaffController extends Controller
     {
         $staff = User::where('role', 'delivery')
             ->withCount([
-                'deliveries as active_deliveries_count' => fn($q) => $q->whereIn('status', ['out_for_delivery']),
-                'deliveries as completed_deliveries_count' => fn($q) => $q->where('status', 'completed'),
+                'deliveries as active_deliveries_count' => fn ($q) => $q->whereIn('status', ['out_for_delivery']),
+                'deliveries as completed_deliveries_count' => fn ($q) => $q->where('status', 'completed'),
             ])
             ->orderByDesc('is_active')
             ->orderBy('name')
