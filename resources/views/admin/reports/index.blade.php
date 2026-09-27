@@ -10,6 +10,13 @@
             <input type="date" name="to" value="{{ $to }}" class="rounded-lg border-gray-300 text-sm focus:border-maroon-500 focus:ring-maroon-500">
         </div>
         <button type="submit" class="bg-maroon-600 hover:bg-maroon-700 text-white text-sm font-medium px-4 py-2 rounded-lg">Run Report</button>
+        <a href="{{ route('admin.reports.export', ['from' => $from, 'to' => $to]) }}"
+            class="inline-flex items-center gap-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-sm font-medium px-4 py-2 rounded-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" />
+            </svg>
+            Export to PDF
+        </a>
     </form>
 
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
@@ -30,6 +37,11 @@
         </x-stat-card>
     </div>
 
+    @if(empty($salesByDay) && empty($expensesByDay) && empty($paymentMethodSplit) && empty($expensesByCategory))
+    <div class="bg-white rounded-xl border border-gray-200 p-10 text-center text-gray-400 text-sm">
+        No sales or expenses recorded between {{ \Carbon\Carbon::parse($from)->format('M j, Y') }} and {{ \Carbon\Carbon::parse($to)->format('M j, Y') }}.
+    </div>
+    @else
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="lg:col-span-2 bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
             <h2 class="font-semibold text-gray-900 mb-4">Sales vs Expenses</h2>
@@ -44,55 +56,103 @@
             <canvas id="categoryChart" height="90"></canvas>
         </div>
     </div>
+    @endif
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
     <script>
-        const maroon = '#7a1f24';
-        const green = '#16a34a';
-        const amber = '#b45309';
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof Chart === 'undefined') {
+                console.error('Chart.js failed to load — check network access to cdnjs.cloudflare.com.');
+                return;
+            }
 
-        const salesByDay = @json($salesByDay);
-        const expensesByDay = @json($expensesByDay);
-        const dateSet = [...new Set([...salesByDay.map(d => d.date), ...expensesByDay.map(d => d.date)])].sort();
+            const maroon = '#7a1f24';
+            const green = '#16a34a';
+            const amber = '#b45309';
 
-        new Chart(document.getElementById('salesChart'), {
-            type: 'line',
-            data: {
-                labels: dateSet,
-                datasets: [
-                    {
-                        label: 'Sales',
-                        data: dateSet.map(d => (salesByDay.find(s => s.date === d)?.total) || 0),
-                        borderColor: maroon, backgroundColor: maroon, tension: 0.3,
+            const salesByDay = @json($salesByDay);
+            const expensesByDay = @json($expensesByDay);
+            const dateSet = [...new Set([...salesByDay.map(d => d.date), ...expensesByDay.map(d => d.date)])].sort();
+
+            const salesCanvas = document.getElementById('salesChart');
+            if (salesCanvas && dateSet.length > 0) {
+                new Chart(salesCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: dateSet,
+                        datasets: [{
+                                label: 'Sales',
+                                data: dateSet.map(d => Number((salesByDay.find(s => s.date === d) || {}).total || 0)),
+                                borderColor: maroon,
+                                backgroundColor: maroon,
+                                tension: 0.3,
+                            },
+                            {
+                                label: 'Expenses',
+                                data: dateSet.map(d => Number((expensesByDay.find(s => s.date === d) || {}).total || 0)),
+                                borderColor: amber,
+                                backgroundColor: amber,
+                                tension: 0.3,
+                            },
+                        ],
                     },
-                    {
-                        label: 'Expenses',
-                        data: dateSet.map(d => (expensesByDay.find(s => s.date === d)?.total) || 0),
-                        borderColor: amber, backgroundColor: amber, tension: 0.3,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
                     },
-                ],
-            },
-            options: { responsive: true, plugins: { legend: { position: 'bottom' } } },
-        });
+                });
+            }
 
-        const paymentSplit = @json($paymentMethodSplit);
-        new Chart(document.getElementById('paymentChart'), {
-            type: 'doughnut',
-            data: {
-                labels: paymentSplit.map(p => p.payment_method.toUpperCase()),
-                datasets: [{ data: paymentSplit.map(p => p.total), backgroundColor: [maroon, green] }],
-            },
-            options: { responsive: true, plugins: { legend: { position: 'bottom' } } },
-        });
+            const paymentSplit = @json($paymentMethodSplit);
+            const paymentCanvas = document.getElementById('paymentChart');
+            if (paymentCanvas && paymentSplit.length > 0) {
+                new Chart(paymentCanvas, {
+                    type: 'doughnut',
+                    data: {
+                        labels: paymentSplit.map(p => p.payment_method.toUpperCase()),
+                        datasets: [{
+                            data: paymentSplit.map(p => Number(p.total)),
+                            backgroundColor: [maroon, green]
+                        }],
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    },
+                });
+            }
 
-        const byCategory = @json($expensesByCategory);
-        new Chart(document.getElementById('categoryChart'), {
-            type: 'bar',
-            data: {
-                labels: byCategory.map(c => c.category),
-                datasets: [{ label: 'Amount', data: byCategory.map(c => c.total), backgroundColor: maroon }],
-            },
-            options: { responsive: true, plugins: { legend: { display: false } } },
+            const byCategory = @json($expensesByCategory);
+            const categoryCanvas = document.getElementById('categoryChart');
+            if (categoryCanvas && byCategory.length > 0) {
+                new Chart(categoryCanvas, {
+                    type: 'bar',
+                    data: {
+                        labels: byCategory.map(c => c.category),
+                        datasets: [{
+                            label: 'Amount',
+                            data: byCategory.map(c => Number(c.total)),
+                            backgroundColor: maroon
+                        }],
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    },
+                });
+            }
         });
     </script>
 

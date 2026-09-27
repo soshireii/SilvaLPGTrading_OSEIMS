@@ -59,6 +59,7 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
     Route::delete('/expenses/{expense}', [AdminExpense::class, 'destroy'])->name('expenses.destroy');
 
     Route::get('/reports', [AdminReport::class, 'index'])->name('reports.index');
+    Route::get('/reports/export', [AdminReport::class, 'export'])->name('reports.export');
 
     // Delivery staff are non-permanent and not created via public registration —
     // the Owner is the only one who can create, edit, or remove their accounts.
